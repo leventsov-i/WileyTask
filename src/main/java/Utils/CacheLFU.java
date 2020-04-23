@@ -50,11 +50,18 @@ public class CacheLFU<K, V> implements Cacheable<K, V> {
         Node<K, V> current = list.get(index);
         Node<K, V> last = list.get(index - 1);
 
-        if (current.counterUse > last.counterUse) {
+        while (current.counterUse > last.counterUse) {
             list.set(index - 1, current);
             list.set(index, last);
             current.index = index - 1;
             last.index = index;
+
+            index--;
+
+            if (index == 0) return;
+
+            current = list.get(index);
+            last = list.get(index - 1);
         }
     }
 
